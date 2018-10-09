@@ -8,16 +8,16 @@ Created on Tue Sep 18 17:48:54 2018
 定义数据清洗函数，将文本中的换行符及英文逗号替换，并将其他非GBK编码文本强行转换
 '''
 def to_csv(df, path):
-       with open(path, 'w', encoding='GBK', errors='ignore') as f:
-              fline=','.join(list(df.columns))+"\n"
-              f.write(fline)
-              x, y = df.shape
-              for i in range(x):
-                     line=""
-                     for j in range(y):
-                            line = line+str(df.iloc[i,j]).replace("\n","").replace(",","，")+','
-                     line=line[:-1]+"\n"
-                     f.write(line)
+    with open(path, 'w', encoding='GBK', errors='ignore') as f:
+        fline=','.join(list(df.columns))+"\n"
+        f.write(fline)
+        x, y = df.shape
+        for i in range(x):
+            line=""
+            for j in range(y):
+                line = line+str(df.iloc[i,j]).replace("\n","").replace(",","，")+','
+            line=line[:-1]+"\n"
+            f.write(line)
 
 #*---------------------------------------------------------------------------*#
 from tqdm import tqdm
@@ -41,11 +41,11 @@ missing.drop('Answer', axis=1, inplace=True)
 to_csv(missing, r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Question_Miss.csv')
 
 que_retry = pd.read_csv(r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Question_Miss.csv',
-                        encoding='GBK')
+               encoding='GBK')
 
 APP_ID = '11788538'
 API_KEY = 'BcIhkEUdtaKmaqGtEIAXG3r2'
-SECRET_KEY = '6Rsdrv6C2FTqEVbEeXroIEWtGjOk3BSI' 
+SECRET_KEY = '6Rsdrv6C2FTqEVbEeXroIEWtGjOk3BSI'
 client = AipNlp(APP_ID, API_KEY, SECRET_KEY)
 
 ''' 新建4个空值列 '''
@@ -55,25 +55,25 @@ que_retry['pos_prob_que'] = 'NaN'
 que_retry['senti_que'] = 'NaN'
 
 for i in tqdm(range(len(que_retry))):
-       text_que = que_retry['Question'][i]
-       ''' 调用情感倾向分析 '''
-       ''' Question '''
-       try:
-              tempo_que = client.sentimentClassify(text_que)
-       except:
-              tempo_que = {}
-       else:
-              try:
-                     que_retry.at[i,'confi_que'] = tempo_que['items'][0]['confidence']
-                     que_retry.at[i,'neg_prob_que'] = tempo_que['items'][0]['negative_prob']
-                     que_retry.at[i,'pos_prob_que'] = tempo_que['items'][0]['positive_prob']
-                     que_retry.at[i,'senti_que'] = tempo_que['items'][0]['sentiment']       
-              except KeyError:
-                     pass
+    text_que = que_retry['Question'][i]
+    ''' 调用情感倾向分析 '''
+    ''' Question '''
+    try:
+        tempo_que = client.sentimentClassify(text_que)
+    except:
+        tempo_que = {}
+    else:
+        try:
+            que_retry.at[i,'confi_que'] = tempo_que['items'][0]['confidence']
+            que_retry.at[i,'neg_prob_que'] = tempo_que['items'][0]['negative_prob']
+            que_retry.at[i,'pos_prob_que'] = tempo_que['items'][0]['positive_prob']
+            que_retry.at[i,'senti_que'] = tempo_que['items'][0]['sentiment']
+        except KeyError:
+            pass
 
 que_retry.drop('Question', axis=1, inplace=True)
 que_retry.to_csv(r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Que_Miss_Retry.csv',
-                 encoding='utf-8', index=False)
+           encoding='utf-8', index=False)
 
 #*---------------------------------------------------------------------------*#
 from tqdm import tqdm
@@ -98,7 +98,7 @@ missing.index = range(len(missing))
 to_csv(missing, r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Answer_Miss.csv')
 
 ans_retry = pd.read_csv(r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Answer_Miss.csv',
-                        encoding='GBK')
+               encoding='GBK')
 
 APP_ID = '10771642'
 API_KEY = '7QKEGf47U1trhYptTB3bM4gP'
@@ -112,25 +112,25 @@ ans_retry['pos_prob_ans'] = 'NaN'
 ans_retry['senti_ans'] = 'NaN'
 
 for i in tqdm(range(len(ans_retry))):
-       text_ans = ans_retry['Answer'][i]
-       ''' 调用情感倾向分析 '''
-       ''' Answer '''
-       try:
-              tempo_ans = client.sentimentClassify(text_ans[0:1024])
-       except:
-              tempo_ans = {}
-       else:
-              try:
-                     ans_retry.at[i,'confi_ans'] = tempo_ans['items'][0]['confidence']
-                     ans_retry.at[i,'neg_prob_ans'] = tempo_ans['items'][0]['negative_prob']
-                     ans_retry.at[i,'pos_prob_ans'] = tempo_ans['items'][0]['positive_prob']
-                     ans_retry.at[i,'senti_ans'] = tempo_ans['items'][0]['sentiment']
-              except KeyError:
-                     pass
-              
+    text_ans = ans_retry['Answer'][i]
+    ''' 调用情感倾向分析 '''
+    ''' Answer '''
+    try:
+        tempo_ans = client.sentimentClassify(text_ans[0:1024])
+    except:
+        tempo_ans = {}
+    else:
+        try:
+            ans_retry.at[i,'confi_ans'] = tempo_ans['items'][0]['confidence']
+            ans_retry.at[i,'neg_prob_ans'] = tempo_ans['items'][0]['negative_prob']
+            ans_retry.at[i,'pos_prob_ans'] = tempo_ans['items'][0]['positive_prob']
+            ans_retry.at[i,'senti_ans'] = tempo_ans['items'][0]['sentiment']
+        except KeyError:
+            pass
+
 ans_retry.drop('Answer', axis=1, inplace=True)
 ans_retry.to_csv(r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Ans_Miss_Retry.csv',
-                 encoding='utf-8', index=False)
+           encoding='utf-8', index=False)
 
 #*---------------------------------------------------------------------------*#
 from tqdm import tqdm
@@ -154,39 +154,39 @@ missing.drop('Answer', axis=1, inplace=True)
 to_csv(missing, r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Cut_Miss.csv')
 
 cut_retry = pd.read_csv(r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Cut_Miss.csv',
-                        encoding='GBK')
+               encoding='GBK')
 
 APP_ID = '14201923'
 API_KEY = 'IqxP6YZ0LbHRUcBPs3gXvkUX'
-SECRET_KEY = 'uCllQY08wOGwwCvZvVkGnMiDq857GC5Q' 
+SECRET_KEY = 'uCllQY08wOGwwCvZvVkGnMiDq857GC5Q'
 client = AipNlp(APP_ID, API_KEY, SECRET_KEY)
 
 cut_retry['WordList'] = 'NaN'
 
 for i in tqdm(range(len(cut_retry))):
-       text = cut_retry['Question'][i]
-       ''' 调用词法分析 '''
-       try:
-              returns = client.lexerCustom(text)
-       except:
-              returns = {}
-       else:
-              try:
-                     if len(returns['items']) == 0:
-                            pass
-                     else:
-                            wordlist = []
-                            for j in range(len(returns['items'])):
-                                   word = returns['items'][j]['item']
-                                   wordlist.append(word)
-                            rettext = "/".join(wordlist)
-                            cut_retry.at[i, 'WordList'] = rettext
-              except:
-                     pass
+    text = cut_retry['Question'][i]
+    ''' 调用词法分析 '''
+    try:
+        returns = client.lexerCustom(text)
+    except:
+        returns = {}
+    else:
+        try:
+            if len(returns['items']) == 0:
+                pass
+            else:
+                wordlist = []
+                for j in range(len(returns['items'])):
+                    word = returns['items'][j]['item']
+                    wordlist.append(word)
+                rettext = "/".join(wordlist)
+                cut_retry.at[i, 'WordList'] = rettext
+        except:
+            pass
 
 cut_retry.drop('Question', axis=1, inplace=True)
 cut_retry.to_csv(r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Cut_Miss_Retry.csv',
-                 encoding='utf-8', index=False)
+           encoding='utf-8', index=False)
 
 #*---------------------------------------------------------------------------*#
 ''' Question '''
@@ -247,46 +247,46 @@ Cut_Complete.to_csv(outpath3, encoding='utf-8', index=False)
 #*---------------------------------------------------------------------------*#
 ''' 词频统计 '''
 df = pd.read_csv(r'C:\Users\Administrator\Desktop\Baidu_Sep_19\Cut_Final.csv',
-                 encoding='utf-8')
+           encoding='utf-8')
 
 df['wd'] = 'NaN'
 for i in tqdm(range(len(df))):
     wd = df['WordList'][i].split('/')
     df.at[i, 'wd'] = wd
-    
+
 freq = []
 for i in tqdm(range(len(df))):
-       wordlist = df['wd'][i]
-       for word in wordlist:
-              if word not in freq:
-                     freq.append(word)
-              else:
-                     pass
+    wordlist = df['wd'][i]
+    for word in wordlist:
+        if word not in freq:
+            freq.append(word)
+        else:
+            pass
 
 freq_dic = {}.fromkeys(freq, 0)
 for i in tqdm(range(len(df))):
-       wl = df['wd'][i]
-       for word in wl:
-              if word in freq:
-                     freq_dic[word] += 1
-              else:
-                     continue
+    wl = df['wd'][i]
+    for word in wl:
+        if word in freq:
+            freq_dic[word] += 1
+        else:
+            continue
 ret_path = r'C:\Users\Administrator\Desktop\Baidu_Sep_19\freq.csv'
 with open(ret_path, 'w', encoding='utf-8') as f:
-       for key in freq_dic.keys():
-              f.write("{},{}\n".format(key, freq_dic[key]))  
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    for key in freq_dic.keys():
+        f.write("{},{}\n".format(key, freq_dic[key]))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

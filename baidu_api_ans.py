@@ -28,29 +28,29 @@ df['senti_ans'] = 'NaN'
 
 start_time = time.time()
 for i in range(len(df)):
-       text_ans = df['Answer'][i]
-       ''' 调用情感倾向分析 '''
-       ''' Answer '''
-       try:
-              tempo_ans = client.sentimentClassify(text_ans[0:1024])
-       except:
-              tempo_ans = {}
-       else:
-              try:
-                     df.at[i,'confi_ans'] = tempo_ans['items'][0]['confidence']
-                     df.at[i,'neg_prob_ans'] = tempo_ans['items'][0]['negative_prob']
-                     df.at[i,'pos_prob_ans'] = tempo_ans['items'][0]['positive_prob']
-                     df.at[i,'senti_ans'] = tempo_ans['items'][0]['sentiment']
-              except KeyError:
-                     pass
-       time.sleep(0.1)
-       end_time = time.time()
-       remain_time = (end_time - start_time) / (i + 1) * (len(df) - (i + 1))
-       print("\r{:>6.2f}% Done, Time Remained: {:04}:{:02}:{:02}".format(
-                     (i + 1) * 100 / len(df), int(remain_time // 3600), 
-                     int(remain_time // 60 % 60), int(remain_time % 60)),
-              end="")
-  
+    text_ans = df['Answer'][i]
+    ''' 调用情感倾向分析 '''
+    ''' Answer '''
+    try:
+        tempo_ans = client.sentimentClassify(text_ans[0:1024])
+    except:
+        tempo_ans = {}
+    else:
+        try:
+            df.at[i,'confi_ans'] = tempo_ans['items'][0]['confidence']
+            df.at[i,'neg_prob_ans'] = tempo_ans['items'][0]['negative_prob']
+            df.at[i,'pos_prob_ans'] = tempo_ans['items'][0]['positive_prob']
+            df.at[i,'senti_ans'] = tempo_ans['items'][0]['sentiment']
+        except KeyError:
+            pass
+    time.sleep(0.1)
+    end_time = time.time()
+    remain_time = (end_time - start_time) / (i + 1) * (len(df) - (i + 1))
+    print("\r{:>6.2f}% Done, Time Remained: {:04}:{:02}:{:02}".format(
+            (i + 1) * 100 / len(df), int(remain_time // 3600),
+            int(remain_time // 60 % 60), int(remain_time % 60)),
+        end="")
+
 df.drop(['Question', 'Answer'], axis=1, inplace=True)
-ret_path = r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Answer_Senti.csv' 
+ret_path = r'C:\Users\Administrator\Desktop\Baidu_Sep_17\Answer_Senti.csv'
 df.to_csv(ret_path, encoding='utf-8', index=False)
